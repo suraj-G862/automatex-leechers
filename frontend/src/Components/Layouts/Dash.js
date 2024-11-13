@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { GiBookshelf } from "react-icons/gi";
 import { IoCalendarOutline } from "react-icons/io5";
-import { HiOutlineDocumentReport } from "react-icons/hi";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { FaWpforms } from "react-icons/fa";
 import { IoLocationOutline } from "react-icons/io5";
@@ -26,7 +25,7 @@ const Dash = () => {
 
   return (
     <main className="self-center">
-      <img src="./it.png"  className=" mx-auto w-[15%]" />
+      <img src="./it.png" alt=""  className=" mx-auto w-[15%]" />
       <h2 className="m-6 font-spectral mx-auto text-center text-6xl font-bold dark:text-slate-400">
         IIT BHILAI
       </h2>

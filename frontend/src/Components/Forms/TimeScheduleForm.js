@@ -1,17 +1,17 @@
 import { useState, useContext, useEffect } from "react";
 import axios from "../../config/api/axios";
 import UserContext from "../../Hooks/UserContext";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaPlus} from "react-icons/fa";
 import { toast } from "react-toastify";
 import { TableHeader } from "../Table";
 import Loading from "../Layouts/Loading";
-import ErrorStrip from "../ErrorStrip";
+import ErrorStrip from "../ErrorStrip"; 
 
 const TimeScheduleForm = () => {
   const { user, paperList } = useContext(UserContext);
   const [timeSchedule, setTimeSchedule] = useState({});
   const [disabled, setDisabled] = useState(false);
-  const [id, setId] = useState("");
+  // const [id, setId] = useState("");
   const [error, setError] = useState("");
 
   const handleFormChange = (e) => {
@@ -36,7 +36,7 @@ const TimeScheduleForm = () => {
     const fetchTimeSchedule = async () => {
       try {
         const response = await axios.get("time_schedule/" + user._id);
-        setId(response.data._id);
+        // setId(response.data._id);
         delete response.data.schedule._id;
         setTimeSchedule(response.data.schedule);
       } catch (err) {
@@ -70,21 +70,6 @@ const TimeScheduleForm = () => {
         toast.success(response.data.message);
       } else setError(err);
     }
-  };
-
-  const deleteTimeSchedule = async (e) => {
-    e.preventDefault();
-    const response = await axios.delete("time_schedule/" + id);
-    toast.success(response.data.message, {
-      icon: ({ theme, type }) => <FaTrash />,
-    });
-    setTimeSchedule({
-      monday: ["--", "--", "--", "--", "--"],
-      tuesday: ["--", "--", "--", "--", "--"],
-      wednesday: ["--", "--", "--", "--", "--"],
-      thursday: ["--", "--", "--", "--", "--"],
-      friday: ["--", "--", "--", "--", "--"],
-    });
   };
 
   console.log(user.role)

@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import UserContext from "../../Hooks/UserContext";
 import axios from "../../config/api/axios";
-import { PiStudentThin, PiUserThin, PiSpinnerGapBold } from "react-icons/pi";
+import {PiSpinnerGapBold } from "react-icons/pi";
 import CircleDesign from "../Layouts/CircleDesign";
 import ErrorStrip from "../ErrorStrip";
 
@@ -112,7 +112,7 @@ const Login = () => {
                   </label>
                 </div>
                 <div className="flex duration-200 w-full justify-center p-1 pt-0 text-8xl dark:border-x-[1.5px] dark:border-solid dark:border-violet-900 md:p-3 md:pt-0">
-                      <img src="./it.png" width="150"></img>
+                      <img src="./it.png" width="150" alt=""></img>
                 </div>
               </section>
               <section className="rounded-b-lg px-4 pb-4 dark:border-x-[1.5px] dark:border-b-[1.5px] dark:border-solid dark:border-violet-900">
