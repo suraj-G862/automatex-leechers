@@ -40,5 +40,6 @@
   },
   "devDependencies": {
     "prettier-plugin-tailwindcss": "^0.4.1"
-  }
+  },
+  "proxy": "http://localhost:3500"
 }
