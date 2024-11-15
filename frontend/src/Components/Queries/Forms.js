@@ -11,7 +11,7 @@ function Forms() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3500/form/list", {
+      .get("https://automatex-leechers.onrender.com/form/list", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -24,7 +24,7 @@ function Forms() {
 
   const addForm = async (form) => {
     try {
-      await axios.post("http://localhost:3500/form/add", form, {
+      await axios.post("https://automatex-leechers.onrender.com/form/add", form, {
         headers: {
           "Content-Type": "application/json",
         },

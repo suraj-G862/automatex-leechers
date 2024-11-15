@@ -9,7 +9,7 @@ function LostFound() {
   const [lost, setLost] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3500/LostFound/list")
+      .get("https://automatex-leechers.onrender.com/LostFound/list")
       .then((res) => setLost(res.data))
       .catch((err) => console.log(err));
     console.log("LostFound");
@@ -26,7 +26,7 @@ function LostFound() {
     }
     setLost((prev) => prev.filter((item) => item._id !== _id));
     try {
-      await axios.delete(`http://localhost:3500/LostFound/remove/${_id}`);
+      await axios.delete(`https://automatex-leechers.onrender.com/LostFound/remove/${_id}`);
     } catch (err) {
       console.log(err);
     }
@@ -44,7 +44,7 @@ function LostFound() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3500/LostFound/add", newItem);
+      await axios.post("https://automatex-leechers.onrender.com/LostFound/add", newItem);
       toast.success("Item added successfully");
       setLost((prev) => [...prev, newItem]);
       handleCloseModal();

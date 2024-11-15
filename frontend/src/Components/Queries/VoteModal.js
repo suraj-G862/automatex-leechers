@@ -19,7 +19,7 @@ function VoteModal({ form, onClose }) {
   useEffect(() => {
     const fetchVotes = async () => {
       try {
-        const response = await axios.post("http://localhost:3500/form/fetchVotes", {
+        const response = await axios.post("https://automatex-leechers.onrender.com/form/fetchVotes", {
           formId: form._id,
         });
         setVotes(response.data.votes);
@@ -64,7 +64,7 @@ function VoteModal({ form, onClose }) {
     setVotes(arr);
     if (votedIndex !== initialIndex) {
       try {
-        await axios.post("http://localhost:3500/form/vote", {
+        await axios.post("https://automatex-leechers.onrender.com/form/vote", {
           formId: form._id,
           updatedVotes: arr,
         });
