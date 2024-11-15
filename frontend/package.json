@@ -1,15 +1,25 @@
+
 {
-  "name": "IITBhilai",
+  "name": "IIT Bhilai",
   "version": "0",
   "description": "Campus Centric Solution",
   "dependencies": {
+    "@chakra-ui/react": "^3.1.1",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@fvilers/disable-react-devtools": "^1.3.0",
+    "@react-google-maps/api": "^2.20.3",
+    "@vis.gl/react-google-maps": "^1.4.0",
     "axios": "^1.3.4",
+    "framer-motion": "^11.11.17",
+    "google-map-react": "^2.2.1",
+    "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.8.2",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.3"
   },
   "scripts": {
@@ -40,6 +50,5 @@
   },
   "devDependencies": {
     "prettier-plugin-tailwindcss": "^0.4.1"
-  },
-  "proxy": "http://localhost:3500"
+  }
 }

@@ -109,3 +109,16 @@ form{
     }
   }
 }
+.app {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-evenly;
+  font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
+.map-container {
+  height: 100%;
+  border: 2px solid black;
+  border-radius: 20px;
+}
