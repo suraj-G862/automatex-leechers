@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const path = require("path");
 const { logger, logEvents } = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
 const cookieParser = require("cookie-parser");
@@ -15,13 +16,13 @@ const PORT = process.env.PORT || 3500;
 connectDB();
 
 app.use(logger);
-app.use(morgan('dev'))
-app.use(cors(corsOptions));
+app.use(morgan("dev"));
+app.use(cors());
 
 app.use(express.json());
 
 app.use(cookieParser());
-
+app.use(express.static(path.join(__dirname, "build")));
 app.use("/", express.static("public"));
 
 app.use("/", require("./routes/root"));
