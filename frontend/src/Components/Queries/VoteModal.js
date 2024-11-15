@@ -1,41 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function VoteModal({ form, onClose }) {
-  const [votes, setVotes] = useState(form.votes);
+  const arr = new Array(form.options.length).fill(0);
+  const [votes, setVotes] = useState(() => (form.votes.length === 0 ? arr : form.votes));
+  const [displayVotes, setDisplayVotes] = useState(() => (form.votes.length === 0 ? arr : form.votes));
+  const [myVote, setMyVote] = useState(arr);
   const [votedIndex, setVotedIndex] = useState(null);
+  const [initialIndex, setInitialIndex] = useState(null);
 
-  const totalVotes = votes.reduce((a, b) => a + b, 0);
+  useEffect(() => {
+    if (form.userVoteIndex !== undefined) {
+      setVotedIndex(form.userVoteIndex);
+      setInitialIndex(form.userVoteIndex);
+    }
+  }, [form]);
+
+  useEffect(() => {
+    const fetchVotes = async () => {
+      try {
+        const response = await axios.post("http://localhost:3500/form/fetchVotes", {
+          formId: form._id,
+        });
+        setVotes(response.data.votes);
+        setDisplayVotes(response.data.votes);
+      } catch (error) {
+        console.error("Error fetching votes:", error);
+      }
+    };
+    fetchVotes();
+  }, [form._id]);
+
+  useEffect(() => {
+    const arr = votes.map((vote, index) => vote + myVote[index]);
+    setDisplayVotes(arr);
+  }, [myVote, votes]);
 
   const handleVote = (index) => {
-    const newVotes = [...votes];
-
+    const newVotes = [...myVote];
     if (votedIndex !== null && votedIndex !== index) {
-      // Decrease vote count of the previous selection
       newVotes[votedIndex]--;
     }
-
-    // Increase vote count of the new selection
+    if (votedIndex === index) {
+      newVotes[index]--;
+      setVotedIndex(null);
+    }
     newVotes[index]++;
-    setVotes(newVotes);
+    setMyVote(newVotes);
     setVotedIndex(index);
   };
 
   const handleClearVote = () => {
     if (votedIndex !== null) {
-      const newVotes = [...votes];
-      // Decrease vote count for the previously selected option
+      const newVotes = [...myVote];
       newVotes[votedIndex]--;
-      setVotes(newVotes);
+      setMyVote(newVotes);
       setVotedIndex(null);
     }
   };
 
+  const handleClose = async () => {
+    const arr = votes.map((vote, index) => vote + myVote[index]);
+    setVotes(arr);
+    if (votedIndex !== initialIndex) {
+      try {
+        await axios.post("http://localhost:3500/form/vote", {
+          formId: form._id,
+          updatedVotes: arr,
+        });
+      } catch (error) {
+        console.error("Error submitting vote:", error);
+      }
+    }
+    onClose();
+  };
+
+  const totalVotes = displayVotes.reduce((a, b) => a + b, 0);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-        {/* Close button at the top-right corner */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
         >
           &times;
@@ -43,10 +89,10 @@ function VoteModal({ form, onClose }) {
 
         <h2 className="text-xl font-semibold mb-2">{form.formName}</h2>
         <p className="text-gray-700 mb-4">{form.question}</p>
-        
+
         <div className="space-y-2">
           {form.options.map((option, index) => {
-            const votePercentage = totalVotes > 0 ? (votes[index] / totalVotes) * 100 : 0;
+            const votePercentage = totalVotes > 0 ? (displayVotes[index] / totalVotes) * 100 : 0;
             return (
               <div key={index} className="flex items-center justify-between">
                 <button
@@ -66,25 +112,15 @@ function VoteModal({ form, onClose }) {
             );
           })}
         </div>
-        
-        {/* Clear Selection Button */}
+
         {votedIndex !== null && (
-          <div>
           <button
             onClick={handleClearVote}
             className="mt-4 px-2 py-2 text-red-600 rounded-lg"
           >
             Clear Selection
           </button>
-          </div>
         )}
-
-        <button
-          onClick={onClose}
-          className="mt-4 px-4 py-2 bg-gray-300 text-gray-700 rounded w-full"
-        >
-          Close
-        </button>
       </div>
     </div>
   );

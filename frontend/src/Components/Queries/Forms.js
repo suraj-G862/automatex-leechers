@@ -1,20 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FormModal from './FormModal';
 import VoteModal from './VoteModal';
+import axios from 'axios';
 
 function Forms() {
-  const [forms, setForms] = useState([{
-    formName: "Arbaz",
-    creator: "CSE",
-    question: "+91 1",
-    options: ["Arbaz", "Sachin"],
-    votes: [1, 2],
-  }]);
+  const [forms, setForms] = useState([{}]);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
-  const addForm = (form) => {
-    setForms([...forms, form]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3500/form/list", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        setForms(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const addForm = async (form) => {
+    try {
+      await axios.post("http://localhost:3500/form/add", form, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setForms([...forms, form]);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const openVoteModal = (form) => {
@@ -28,8 +46,8 @@ function Forms() {
         <td className="px-4 py-2">{formName}</td>
         <td className="px-4 py-2">{creator}</td>
         <td className="px-4 py-2 text-center">
-          <button onClick={() => openVoteModal(form)}  className="mt-2 bg-gray-900 text-white px-4 py-2 rounded" >
-              Enter
+          <button onClick={() => openVoteModal(form)} className="mt-2 bg-gray-900 text-white px-4 py-2 rounded">
+            Enter
           </button>
         </td>
       </tr>
@@ -38,7 +56,7 @@ function Forms() {
 
   return (
     <main className="p-4">
-       <h2 className="mb-2 mt-3 whitespace-break-spaces text-4xl font-bold text-violet-950 underline decoration-inherit decoration-2 underline-offset-4 dark:mt-0 dark:text-slate-400 md:text-6xl">
+      <h2 className="mb-2 mt-3 whitespace-break-spaces text-4xl font-bold text-violet-950 underline decoration-inherit decoration-2 underline-offset-4 dark:mt-0 dark:text-slate-400 md:text-6xl">
         Forms
       </h2>
       <button
@@ -47,14 +65,14 @@ function Forms() {
       >
         Add a Form <span className="text-green-500 text-lg">+</span>
       </button>
-      
+
       {isFormModalOpen && (
         <FormModal
           onClose={() => setIsFormModalOpen(false)}
           onSubmit={addForm}
         />
       )}
-      
+
       {isVoteModalOpen && selectedForm && (
         <VoteModal
           form={selectedForm}
@@ -75,7 +93,6 @@ function Forms() {
           </tbody>
         </table>
       </div>
-       {/* /// */}
     </main>
   );
 }

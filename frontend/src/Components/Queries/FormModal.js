@@ -16,7 +16,7 @@ function FormModal({ onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ formName, creator, question, options, votes: new Array(options.length).fill(0) });
+    onSubmit({ formName, creator, question, options });
     onClose();
   };
 

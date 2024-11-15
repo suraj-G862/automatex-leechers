@@ -1,37 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import UserContext  from "../../Hooks/UserContext";
+import UserContext from "../../Hooks/UserContext";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 function LostFound() {
   const { user } = useContext(UserContext);
-  // console.log(user);  
   const [lost, setLost] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:3500/LostFound/list")
-      .then((res) => res.json())
-      .then((data) => setLost(data))
+    axios
+      .get("http://localhost:3500/LostFound/list")
+      .then((res) => setLost(res.data))
       .catch((err) => console.log(err));
-      console.log("LostFound");
+    console.log("LostFound");
   }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newItem, setNewItem] = useState({ ItemName: "", Description: "", ContactInfo: "" , AddedBy: user._id});
+  const [newItem, setNewItem] = useState({ ItemName: "", Description: "", ContactInfo: "", AddedBy: user._id });
 
-  const handleRemove = async (_id , AddedBy) => {
+  const handleRemove = async (_id, AddedBy) => {
     console.log(_id);
-    if(AddedBy !== user._id){
+    if (AddedBy !== user._id) {
       toast.error("Unauthorized");
-      return ;
+      return;
     }
     setLost((prev) => prev.filter((item) => item._id !== _id));
-    await fetch(`http://localhost:3500/LostFound/remove/${_id}`, {
-      method: "DELETE"
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-  }; 
+    try {
+      await axios.delete(`http://localhost:3500/LostFound/remove/${_id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleAddItem = () => {
     setIsModalOpen(true);
@@ -39,31 +38,29 @@ function LostFound() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setNewItem({ ItemName: "", Description: "", ContactInfo: "" , AddedBy: user._id});
+    setNewItem({ ItemName: "", Description: "", ContactInfo: "", AddedBy: user._id });
   };
 
-  const handleSubmit =  async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch("http://localhost:3500/LostFound/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newItem),
-    });
-    toast.success("Item added successfully");
-    setLost((prev) => [...prev, newItem]);
-    handleCloseModal();
+    try {
+      await axios.post("http://localhost:3500/LostFound/add", newItem);
+      toast.success("Item added successfully");
+      setLost((prev) => [...prev, newItem]);
+      handleCloseModal();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const displayCard = (ItemName, Description, ContactInfo, _id , AddedBy) => {
+  const displayCard = (ItemName, Description, ContactInfo, _id, AddedBy) => {
     return (
       <tr key={_id} className="border-b border-gray-300">
         <td className="px-4 py-2">{ItemName}</td>
         <td className="px-4 py-2">{Description}</td>
         <td className="px-4 py-2">{ContactInfo}</td>
         <td className="px-4 py-2 text-center">
-          <button onClick={() => handleRemove(_id , AddedBy)} className="text-red-500 hover:text-red-700">
+          <button onClick={() => handleRemove(_id, AddedBy)} className="text-red-500 hover:text-red-700">
             <span className="text-2xl">➖</span>
           </button>
         </td>
@@ -94,7 +91,7 @@ function LostFound() {
             </tr>
           </thead>
           <tbody className="bg-gray-100 text-gray-900">
-            {lost.map((data) => displayCard(data.ItemName, data.Description, data.ContactInfo, data._id , data.AddedBy))}
+            {lost.map((data) => displayCard(data.ItemName, data.Description, data.ContactInfo, data._id, data.AddedBy))}
           </tbody>
         </table>
       </div>
